@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 )
 
 const CikolataFiyata = 10
@@ -12,8 +13,8 @@ func main() {
 
 	stok := make(map[string]int)
 	stok["cikolata"] = 10
-	stok["kola"] = 5
-	stok["cips"] = 3
+	stok["kola"] = 10
+	stok["cips"] = 10
 
 	urunler := make(map[string]int)
 
@@ -69,19 +70,46 @@ func main() {
 				toplam += CikolataFiyata * Adet
 			} else {
 				toplam += CikolataFiyata*Adet - ((CikolataFiyata*Adet)*10)/100
+
+				dosyayaYaz("cikolata.txt", "cikolataya kampanya uygulandı\n")
 			}
 
 		}
 
 		if hangiUrun == "kola" {
-			toplam += KolaFiyata * Adet
+			if girilenAdet < 3 {
+				toplam += KolaFiyata * Adet
+			} else {
+				toplam += KolaFiyata*Adet - ((KolaFiyata*Adet)*5)/100
+
+				dosyayaYaz("kola.txt", "kolaya kampanya uygulandı\n")
+			}
 		}
 
 		if hangiUrun == "cips" {
-			toplam += CipsFiyata * Adet
+			if girilenAdet < 3 {
+				toplam += CipsFiyata * Adet
+			} else {
+				toplam += CipsFiyata*Adet - ((CipsFiyata*Adet)*15)/100
+
+				dosyayaYaz("cips.txt", "cipse kampanya uygulandı\n")
+			}
 		}
 
 	}
 
 	fmt.Printf(" toplam ödenecek miktar %d TL", toplam)
+}
+
+func dosyayaYaz(dosyaIsmi string, yazi string) {
+	f, err := os.OpenFile(dosyaIsmi, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		panic(err)
+	}
+
+	defer f.Close()
+
+	if _, err = f.WriteString(yazi); err != nil {
+		panic(err)
+	}
 }
